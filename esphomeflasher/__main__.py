@@ -112,6 +112,7 @@ def run_esphomeflasher(argv):
     print(" - MAC Address: {}".format(info.mac))
 
     stub_chip = chip_run_stub(chip)
+    flash_size = None
 
     if args.upload_baud_rate != 115200:
         try:
@@ -119,7 +120,20 @@ def run_esphomeflasher(argv):
         except esptool.FatalError as err:
             raise EsphomeflasherError("Error changing ESP upload baud rate: {}".format(err))
 
-    flash_size = detect_flash_size(stub_chip)
+        # Check if the higher baud rate works
+        try:
+            flash_size = detect_flash_size(stub_chip)
+        except esptool.FatalError as err:
+            # Go back to old baud rate by recreating chip instance
+            print("Chip does not support baud rate {}, changing to 115200".format(args.upload_baud_Rate))
+            stub_chip._port.close()
+            chip = detect_chip(port, args.esp8266, args.esp32)
+            stub_chip = chip_run_stub(chip)
+
+    if flash_size is None:
+        flash_size = detect_flash_size(stub_chip)
+
+
     print(" - Flash Size: {}".format(flash_size))
 
     mock_args = configure_write_flash_args(info, firmware, flash_size,
