@@ -223,7 +223,7 @@ class MainFrame(wx.Frame):
         serial_boxsizer = wx.BoxSizer(wx.HORIZONTAL)
         serial_boxsizer.Add(self.choice, 1, wx.EXPAND)
         serial_boxsizer.AddStretchSpacer(0)
-        serial_boxsizer.Add(reload_button, 0, wx.ALIGN_RIGHT, 20)
+        serial_boxsizer.Add(reload_button, 0, wx.ALIGN_NOT, 20)
 
         button = wx.Button(panel, -1, "Flash ESP")
         button.Bind(wx.EVT_BUTTON, on_clicked)
