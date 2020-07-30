@@ -1,10 +1,12 @@
 name: Build Workflow
 
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
 
 jobs:
   build-windows:
-    runs-on: windows-latest
+    runs-on: windows-2019
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -13,25 +15,20 @@ jobs:
         with:
           python-version: '3.7'
           architecture: 'x64'
-      - name: Print Versions
-        run: |
-          python --version
-          pip --version
       - name: Install requirements
         run: |
-          pip install -r requirements_build.txt
+          pip install -r requirements.txt -r requirements_build.txt
           pip install -e .
       - name: Run PyInstaller
         run: |
           python -m PyInstaller.__main__ -F -w -n ESPHome-Flasher -i icon.ico esphomeflasher\__main__.py
-      - name: See dist directory
-        run: ls dist
-      - uses: actions/upload-artifact@master
+      - uses: actions/upload-artifact@v2
         with:
           name: Windows
           path: dist/ESPHome-Flasher.exe
+
   build-windows-x86:
-    runs-on: windows-latest
+    runs-on: windows-2019
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -40,54 +37,45 @@ jobs:
         with:
           python-version: '3.7'
           architecture: 'x86'
-      - name: Print Versions
-        run: |
-          python --version
-          pip --version
       - name: Install requirements
         run: |
-          pip install -r requirements_build.txt
+          pip install -r requirements.txt -r requirements_build.txt
           pip install -e .
       - name: Run PyInstaller
         run: |
           python -m PyInstaller.__main__ -F -w -n ESPHome-Flasher -i icon.ico esphomeflasher\__main__.py
       - name: See dist directory
         run: ls dist
-      - uses: actions/upload-artifact@master
+      - uses: actions/upload-artifact@v2
         with:
           name: Windows-x86
           path: dist/ESPHome-Flasher.exe
 
-  #build-ubuntu:
-  #  runs-on: ubuntu-latest
-  #  steps:
-  #    - name: Checkout
-  #      uses: actions/checkout@v1
-  #    - name: Install Python
-  #      uses: actions/setup-python@v1
-  #      with:
-  #        python-version: '3.7'
-  #    - name: Install dependencies
-  #      run: |
-  #        sudo apt install python-wxgtk3.0 build-essential libgtk-3-dev
-  #    - name: Print Versions
-  #      run: |
-  #        python --version
-  #        pip --version
-  #    - name: Install requirements
-  #      run: |
-  #        pip install pathlib2
-  #        pip install -r requirements_build.txt
-  #        pip install -e .
-  #    - name: Run PyInstaller
-  #      run: |
-  #        python -m PyInstaller.__main__ -F -w -n ESPHome-Flasher -i icon.ico esphomeflasher/__main__.py
-  #    - name: See dist directory
-  #      run: ls dist
-  #    - uses: actions/upload-artifact@master
-  #      with:
-  #        name: Ubuntu
-  #        path: dist
+  build-ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+     - name: Checkout
+       uses: actions/checkout@v1
+     - name: Install Python
+       uses: actions/setup-python@v1
+       with:
+         python-version: '3.7'
+     - name: Install dependencies
+       run: |
+         sudo apt install python-wxgtk3.0 build-essential libgtk-3-dev
+     - name: Install requirements
+       run: |
+         pip install -r requirements.txt -r requirements_build.txt
+         pip install -e .
+     - name: Run PyInstaller
+       run: |
+         python -m PyInstaller.__main__ -F -w -n ESPHome-Flasher -i icon.ico esphomeflasher/__main__.py
+     - name: See dist directory
+       run: ls dist
+     - uses: actions/upload-artifact@v2
+       with:
+         name: Ubuntu
+         path: dist/ESPHome-Flasher
 
 
   build-macos:
@@ -99,20 +87,48 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: '3.7'
-      - name: Print Versions
-        run: |
-          python --version
-          pip --version
       - name: Install requirements
         run: |
-          pip install -r requirements_build.txt
+          pip install -r requirements.txt -r requirements_build.txt
           pip install -e .
       - name: Run PyInstaller
         run: |
           python -m PyInstaller.__main__ -F -w -n ESPHome-Flasher -i icon.icns esphomeflasher/__main__.py
       - name: See dist directory
         run: ls dist
-      - uses: actions/upload-artifact@master
+      - name: Move app
+        run: |
+          mv dist/ESPHome-Flasher.app dist/ESPHome-Flasher-dev-macOS.app
+      - uses: actions/upload-artifact@v2
         with:
-          name: MacOS
-          path: dist/ESPHome-Flasher.app
+          name: macOS
+          path: dist/
+
+  build-pypi:
+    runs-on: ubuntu-latest
+    steps:
+     - name: Checkout
+       uses: actions/checkout@v1
+     - name: Install Python
+       uses: actions/setup-python@v1
+       with:
+         python-version: '3.7'
+     - name: Install dependencies
+       run: |
+         sudo apt install python-wxgtk3.0 build-essential libgtk-3-dev
+     - name: Install requirements
+       run: |
+         pip install -r requirements.txt -r requirements_build.txt
+         pip install -e .
+     - name: Run sdist
+       run: python setup.py sdist bdist_wheel
+     - name: See dist directory
+       run: ls dist
+     - uses: actions/upload-artifact@v2
+       with:
+         name: sdist
+         path: dist/esphomeflasher-*.tar.gz
+     - uses: actions/upload-artifact@v2
+       with:
+         name: bdist_wheel
+         path: dist/esphomeflasher-*.whl

@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 """esphomeflasher setup script."""
+import os
+
 from setuptools import setup, find_packages
 
 from esphomeflasher import const
@@ -21,11 +23,14 @@ GITHUB_URL = 'https://github.com/{}'.format(GITHUB_PATH)
 
 DOWNLOAD_URL = '{}/archive/{}.zip'.format(GITHUB_URL, const.__version__)
 
-REQUIRES = [
-    'wxpython>=4.0,<5.0',
-    'esptool==2.8',
-    'requests>=2.0,<3',
-]
+here = os.path.abspath(os.path.dirname(__file__))
+
+with open(os.path.join(here, 'requirements.txt')) as requirements_txt:
+    REQUIRES = requirements_txt.read().splitlines()
+
+with open(os.path.join(here, 'README.md')) as readme:
+    LONG_DESCRIPTION = readme.read()
+
 
 setup(
     name=PROJECT_PACKAGE_NAME,
@@ -35,18 +40,20 @@ setup(
     download_url=DOWNLOAD_URL,
     author=PROJECT_AUTHOR,
     author_email=PROJECT_EMAIL,
-    description="ESP8266/ESP32 firmware flasher for esphomelib",
+    description="ESP8266/ESP32 firmware flasher for ESPHome",
     include_package_data=True,
     zip_safe=False,
     platforms='any',
     test_suite='tests',
-    python_requires='>=3.5',
+    python_requires='>=3.5,<4.0',
     install_requires=REQUIRES,
+    long_description=LONG_DESCRIPTION,
+    long_description_content_type='text/markdown',
     keywords=['home', 'automation'],
     entry_points={
         'console_scripts': [
             'esphomeflasher = esphomeflasher.__main__:main'
         ]
     },
-    packages=find_packages()
+    packages=find_packages(include="esphomerelease.*")
 )

@@ -1,15 +1,15 @@
-# esphomeflasher
+# ESPHome-Flasher
 
-esphomeflasher is a utility app for the [esphomelib](https://esphomelib.com/esphomeyaml/index.html)
-framework and is designed to make flashing ESPs with esphomelib as simple as possible by:
+ESPHome-Flasher is a utility app for the [ESPHome](https://esphome.io/)
+framework and is designed to make flashing ESPs with ESPHome as simple as possible by:
 
  * Having pre-built binaries for most operating systems.
  * Hiding all non-essential options for flashing. All necessary options for flashing
    (bootloader, flash mode) are automatically extracted from the binary.
-   
+
 This project was originally intended to be a simple command-line tool,
 but then I decided that a GUI would be nice. As I don't like writing graphical
-front end code, the GUI largely is based on the 
+front end code, the GUI largely is based on the
 [NodeMCU PyFlasher](https://github.com/marcelstoer/nodemcu-pyflasher)
 project.
 
@@ -19,7 +19,7 @@ library by espressif.
 ## Installation
 
 Es doesn't have to be installed, just double-click it and it'll start.
-Check the [releases section](https://github.com/OttoWinter/esphomeflasher/releases)
+Check the [releases section](https://github.com/esphome/esphomeflasher/releases)
 for downloads for your platform.
 
 ## Installation Using `pip`

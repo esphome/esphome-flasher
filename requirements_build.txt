@@ -1,4 +1,2 @@
-wxpython>=4.0,<5.0
-esptool==2.8
-requests>=2.0,<3
-pyinstaller
+pyinstaller>=3.6,<4
+wheel
