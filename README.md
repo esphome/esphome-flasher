@@ -19,7 +19,7 @@ library by espressif.
 ## Installation
 
 Es doesn't have to be installed, just double-click it and it'll start.
-Check the [releases section](https://github.com/esphome/esphomeflasher/releases)
+Check the [releases section](https://github.com/esphome/esphome-flasher/releases)
 for downloads for your platform.
 
 ## Installation Using `pip`

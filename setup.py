@@ -15,7 +15,7 @@ PROJECT_URL = 'https://esphome.io/guides/faq.html'
 PROJECT_EMAIL = 'contact@esphome.io'
 
 PROJECT_GITHUB_USERNAME = 'esphome'
-PROJECT_GITHUB_REPOSITORY = 'esphomeflasher'
+PROJECT_GITHUB_REPOSITORY = 'esphome-flasher'
 
 PYPI_URL = 'https://pypi.python.org/pypi/{}'.format(PROJECT_PACKAGE_NAME)
 GITHUB_PATH = '{}/{}'.format(PROJECT_GITHUB_USERNAME, PROJECT_GITHUB_REPOSITORY)
