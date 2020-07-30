@@ -27,7 +27,7 @@ for downloads for your platform.
 If you want to install this application from `pip`:
 
 - Install Python 3.x
-- Install [wxPython 4.x](https://wxpython.org/) manually or run `pip3 install wxpython`
+- Install [wxPython 4.x](https://wxpython.org/) manually or run `pip3 install wxpython` (see also linux notes below)
 - Install this project using `pip3 install esphomeflasher`
 - Start the GUI using `esphomeflasher`. Alternatively, you can use the command line interface (
   type `esphomeflasher -h` for info)
@@ -41,6 +41,20 @@ If you want to build this application yourself you need to:
 - Download this project and run `pip3 install -e .` in the project's root.
 - Start the GUI using `esphomeflasher`. Alternatively, you can use the command line interface (
   type `esphomeflasher -h` for info)
+
+
+## Linux Notes
+
+Installing wxpython for linux can be a bit challenging (especially when you don't want to install from source).
+You can use the following command to install a wxpython suitable with your OS:
+
+```bash
+# Go to https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ and select the correct OS type
+# here, we assume ubuntu 18.03 bionic
+pip3 install -U \
+    -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-18.04 \
+    wxPython
+```
 
 ## License
 
