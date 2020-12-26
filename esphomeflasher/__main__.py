@@ -123,9 +123,9 @@ def run_esphomeflasher(argv):
         # Check if the higher baud rate works
         try:
             flash_size = detect_flash_size(stub_chip)
-        except esptool.FatalError as err:
+        except EsphomeflasherError as err:
             # Go back to old baud rate by recreating chip instance
-            print("Chip does not support baud rate {}, changing to 115200".format(args.upload_baud_Rate))
+            print("Chip does not support baud rate {}, changing to 115200".format(args.upload_baud_rate))
             stub_chip._port.close()
             chip = detect_chip(port, args.esp8266, args.esp32)
             stub_chip = chip_run_stub(chip)
