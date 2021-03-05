@@ -1,3 +1,4 @@
 wxpython>=4.0,<5.0
-esptool==2.8
+esptool==3.0
+pyserial==3.5
 requests>=2.24.0,<3
