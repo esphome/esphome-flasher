@@ -34,4 +34,5 @@ def prevent_print(func, *args, **kwargs):
         raise EsphomeflasherError("Serial port closed: {}".format(err))
     finally:
         sys.stdout = orig_sys_stdout
+        sys.stdout.isatty = lambda: False
         pass
