@@ -22,6 +22,14 @@ It doesn't have to be installed, just double-click it and it'll start.
 Check the [releases section](https://github.com/esphome/esphome-flasher/releases)
 for downloads for your platform.
 
+### Mac OSX Big Sur Drivers
+
+Below you will find the info and download for the latest drivers needed for Mac OSX Big Sur.
+
+Info: https://www.silabs.com/community/interface/forum.topic.html/vcp_driver_for_macosbigsur110x-SWJK
+
+Driver: https://www.silabs.com/documents/public/software/Mac_OSX_VCP_Driver.zip
+
 ## Installation Using `pip`
 
 If you want to install this application from `pip`:
