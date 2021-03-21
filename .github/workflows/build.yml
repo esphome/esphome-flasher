@@ -99,6 +99,9 @@ jobs:
           python -m PyInstaller.__main__ -F -w -n ESPHome-Flasher -i icon.icns esphomeflasher/__main__.py
       - name: See dist directory
         run: ls dist
+      - name: Make executeable
+        run: |
+          chmod ug+x dist/ESPHome-Flasher.app/Contents/MacOS/ESPHome-Flasher
       - name: Move app
         run: |
           mv dist/ESPHome-Flasher.app dist/ESPHome-Flasher-dev-macOS.app
