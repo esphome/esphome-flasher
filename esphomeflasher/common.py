@@ -23,6 +23,7 @@ class MockEsptoolArgs(object):
         self.verify = False
         self.erase_all = False
         self.encrypt = False
+        self.encrypt_files = None
 
 
 class ChipInfo(object):
