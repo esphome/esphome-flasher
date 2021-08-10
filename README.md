@@ -16,6 +16,9 @@ project.
 The flashing process is done using the [esptool](https://github.com/espressif/esptool)
 library by espressif.
 
+[**Attention - does not run on the M1 Chip by Apple**](https://github.com/marcelstoer/nodemcu-pyflasher/issues/77#issuecomment-856474034)
+
+
 ## Installation
 
 It doesn't have to be installed, just double-click it and it'll start.
