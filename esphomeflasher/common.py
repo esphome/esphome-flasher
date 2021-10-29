@@ -93,11 +93,11 @@ def read_chip_property(func, *args, **kwargs):
     try:
         return prevent_print(func, *args, **kwargs)
     except esptool.FatalError as err:
-        raise EsphomeflasherError("Reading chip details failed: {}".format(err))
+        raise EsphomeflasherError(f"Reading chip details failed: {err}")
 
 
 def read_chip_info(chip):
-    mac = ":".join("{:02X}".format(x) for x in read_chip_property(chip.read_mac))
+    mac = ":".join(f"{x:02X}" for x in read_chip_property(chip.read_mac))
     if isinstance(chip, esptool.ESP32ROM):
         model = read_chip_property(chip.get_chip_description)
         features = read_chip_property(chip.get_chip_features)
@@ -119,7 +119,7 @@ def read_chip_info(chip):
         model = read_chip_property(chip.get_chip_description)
         chip_id = read_chip_property(chip.chip_id)
         return ESP8266ChipInfo(model, mac, chip_id)
-    raise EsphomeflasherError("Unknown chip type {}".format(type(chip)))
+    raise EsphomeflasherError(f"Unknown chip type {type(chip)}")
 
 
 def chip_run_stub(chip):
@@ -127,7 +127,7 @@ def chip_run_stub(chip):
         return chip.run_stub()
     except esptool.FatalError as err:
         raise EsphomeflasherError(
-            "Error putting ESP in stub flash mode: {}".format(err)
+            f"Error putting ESP in stub flash mode: {err}"
         )
 
 
@@ -143,8 +143,7 @@ def read_firmware_info(firmware):
     magic, _, flash_mode_raw, flash_size_freq = struct.unpack("BBBB", header)
     if magic != esptool.ESPLoader.ESP_IMAGE_MAGIC:
         raise EsphomeflasherError(
-            "The firmware binary is invalid (magic byte={:02X}, should be {:02X})"
-            "".format(magic, esptool.ESPLoader.ESP_IMAGE_MAGIC)
+            f"The firmware binary is invalid (magic byte={magic:02X}, should be {esptool.ESPLoader.ESP_IMAGE_MAGIC:02X})"
         )
     flash_freq_raw = flash_size_freq & 0x0F
     flash_mode = {0: "qio", 1: "qout", 2: "dio", 3: "dout"}.get(flash_mode_raw)
@@ -165,11 +164,11 @@ def open_downloadable_binary(path):
             response.raise_for_status()
         except requests.exceptions.Timeout as err:
             raise EsphomeflasherError(
-                "Timeout while retrieving firmware file '{}': {}".format(path, err)
+                f"Timeout while retrieving firmware file '{path}': {err}"
             )
         except requests.exceptions.RequestException as err:
             raise EsphomeflasherError(
-                "Error while retrieving firmware file '{}': {}".format(path, err)
+                f"Error while retrieving firmware file '{path}': {err}"
             )
 
         binary = io.BytesIO()
@@ -180,7 +179,7 @@ def open_downloadable_binary(path):
     try:
         return open(path, "rb")
     except IOError as err:
-        raise EsphomeflasherError("Error opening binary '{}': {}".format(path, err))
+        raise EsphomeflasherError(f"Error opening binary '{path}': {err}")
 
 
 def format_bootloader_path(path, flash_mode, flash_freq):
@@ -196,7 +195,7 @@ def configure_write_flash_args(
     if isinstance(info, ESP32ChipInfo):
         if flash_freq in ("26m", "20m"):
             raise EsphomeflasherError(
-                "No bootloader available for flash frequency {}".format(flash_freq)
+                f"No bootloader available for flash frequency {flash_freq}"
             )
         bootloader = open_downloadable_binary(
             format_bootloader_path(bootloader_path, flash_mode, flash_freq)
@@ -224,12 +223,12 @@ def detect_chip(port, force_esp8266=False, force_esp32=False):
             if "Wrong boot mode detected" in str(err):
                 msg = "ESP is not in flash boot mode. If your board has a flashing pin, try again while keeping it pressed."
             else:
-                msg = "ESP Chip Auto-Detection failed: {}".format(err)
+                msg = f"ESP Chip Auto-Detection failed: {err}"
             raise EsphomeflasherError(msg) from err
 
     try:
         chip.connect()
     except esptool.FatalError as err:
-        raise EsphomeflasherError("Error connecting to ESP: {}".format(err))
+        raise EsphomeflasherError(f"Error connecting to ESP: {err}")
 
     return chip

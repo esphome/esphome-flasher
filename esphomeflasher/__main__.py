@@ -27,7 +27,7 @@ from esphomeflasher.helpers import list_serial_ports
 
 
 def parse_args(argv):
-    parser = argparse.ArgumentParser(prog="esphomeflasher {}".format(const.__version__))
+    parser = argparse.ArgumentParser(prog=f"esphomeflasher {const.__version__}")
     parser.add_argument("-p", "--port", help="Select the USB/COM port for uploading.")
     group = parser.add_mutually_exclusive_group(required=False)
     group.add_argument("--esp8266", action="store_true")
@@ -64,7 +64,7 @@ def parse_args(argv):
 
 def select_port(args):
     if args.port is not None:
-        print("Using '{}' as serial port.".format(args.port))
+        print(f"Using '{args.port}' as serial port.")
         return args.port
     ports = list_serial_ports()
     if not ports:
@@ -72,10 +72,10 @@ def select_port(args):
     if len(ports) != 1:
         print("Found more than one serial port:")
         for port, desc in ports:
-            print(" * {} ({})".format(port, desc))
+            print(f" * {port} ({desc})")
         print("Please choose one with the --port argument.")
         raise EsphomeflasherError
-    print("Auto-detected serial port: {}".format(ports[0][0]))
+    print(f"Auto-detected serial port: {ports[0][0]}")
     return ports[0][0]
 
 
@@ -110,32 +110,28 @@ def run_esphomeflasher(argv):
     try:
         firmware = open(args.binary, "rb")
     except IOError as err:
-        raise EsphomeflasherError("Error opening binary: {}".format(err))
+        raise EsphomeflasherError(f"Error opening binary: {err}")
     chip = detect_chip(port, args.esp8266, args.esp32)
     info = read_chip_info(chip)
 
     print()
     print("Chip Info:")
-    print(" - Chip Family: {}".format(info.family))
-    print(" - Chip Model: {}".format(info.model))
+    print(f" - Chip Family: {info.family}")
+    print(f" - Chip Model: {info.model}")
     if isinstance(info, ESP32ChipInfo):
-        print(" - Number of Cores: {}".format(info.num_cores))
-        print(" - Max CPU Frequency: {}".format(info.cpu_frequency))
-        print(" - Has Bluetooth: {}".format("YES" if info.has_bluetooth else "NO"))
+        print(f" - Number of Cores: {info.num_cores}")
+        print(f" - Max CPU Frequency: {info.cpu_frequency}")
+        print(f" - Has Bluetooth: {'YES' if info.has_bluetooth else 'NO'}")
         print(
-            " - Has Embedded Flash: {}".format(
-                "YES" if info.has_embedded_flash else "NO"
-            )
+            f" - Has Embedded Flash: {'YES' if info.has_embedded_flash else 'NO'}"
         )
         print(
-            " - Has Factory-Calibrated ADC: {}".format(
-                "YES" if info.has_factory_calibrated_adc else "NO"
-            )
+            f" - Has Factory-Calibrated ADC: {'YES' if info.has_factory_calibrated_adc else 'NO'}"
         )
     else:
-        print(" - Chip ID: {:08X}".format(info.chip_id))
+        print(f" - Chip ID: {info.chip_id:08X}")
 
-    print(" - MAC Address: {}".format(info.mac))
+    print(f" - MAC Address: {info.mac}")
 
     stub_chip = chip_run_stub(chip)
     flash_size = None
@@ -145,7 +141,7 @@ def run_esphomeflasher(argv):
             stub_chip.change_baud(args.upload_baud_rate)
         except esptool.FatalError as err:
             raise EsphomeflasherError(
-                "Error changing ESP upload baud rate: {}".format(err)
+                f"Error changing ESP upload baud rate: {err}"
             )
 
         # Check if the higher baud rate works
@@ -154,9 +150,7 @@ def run_esphomeflasher(argv):
         except EsphomeflasherError:
             # Go back to old baud rate by recreating chip instance
             print(
-                "Chip does not support baud rate {}, changing to 115200".format(
-                    args.upload_baud_rate
-                )
+                f"Chip does not support baud rate {args.upload_baud_rate}, changing to 115200"
             )
             stub_chip._port.close()
             chip = detect_chip(port, args.esp8266, args.esp32)
@@ -165,30 +159,30 @@ def run_esphomeflasher(argv):
     if flash_size is None:
         flash_size = detect_flash_size(stub_chip)
 
-    print(" - Flash Size: {}".format(flash_size))
+    print(f" - Flash Size: {flash_size}")
 
     mock_args = configure_write_flash_args(
         info, firmware, flash_size, args.bootloader, args.partitions, args.otadata
     )
 
-    print(" - Flash Mode: {}".format(mock_args.flash_mode))
-    print(" - Flash Frequency: {}Hz".format(mock_args.flash_freq.upper()))
+    print(f" - Flash Mode: {mock_args.flash_mode}")
+    print(f" - Flash Frequency: {mock_args.flash_freq.upper()}Hz")
 
     try:
         stub_chip.flash_set_parameters(esptool.flash_size_bytes(flash_size))
     except esptool.FatalError as err:
-        raise EsphomeflasherError("Error setting flash parameters: {}".format(err))
+        raise EsphomeflasherError(f"Error setting flash parameters: {err}")
 
     if not args.no_erase:
         try:
             esptool.erase_flash(stub_chip, mock_args)
         except esptool.FatalError as err:
-            raise EsphomeflasherError("Error while erasing flash: {}".format(err))
+            raise EsphomeflasherError(f"Error while erasing flash: {err}")
 
     try:
         esptool.write_flash(stub_chip, mock_args)
     except esptool.FatalError as err:
-        raise EsphomeflasherError("Error while writing flash: {}".format(err))
+        raise EsphomeflasherError(f"Error while writing flash: {err}")
 
     print("Hard Resetting...")
     stub_chip.hard_reset()

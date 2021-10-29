@@ -32,7 +32,7 @@ def prevent_print(func, *args, **kwargs):
     except serial.SerialException as err:
         from esphomeflasher.common import EsphomeflasherError
 
-        raise EsphomeflasherError("Serial port closed: {}".format(err))
+        raise EsphomeflasherError(f"Serial port closed: {err}")
     finally:
         sys.stdout = orig_sys_stdout
         pass

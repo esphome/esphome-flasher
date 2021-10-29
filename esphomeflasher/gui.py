@@ -165,7 +165,7 @@ class FlashingThread(threading.Thread):
                 argv.append("--show-logs")
             run_esphomeflasher(argv)
         except Exception as e:
-            print("Unexpected error: {}".format(e))
+            print(f"Unexpected error: {e}")
             raise
 
 
