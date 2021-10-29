@@ -10,9 +10,9 @@ jobs:
     runs-on: windows-2019
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2.3.5
       - name: Install Python
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v2.2.2
         with:
           python-version: '3.10'
           architecture: 'x64'
@@ -32,9 +32,9 @@ jobs:
     runs-on: windows-2019
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2.3.5
       - name: Install Python
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v2.2.2
         with:
           python-version: '3.10'
           architecture: 'x86'
@@ -56,9 +56,9 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
      - name: Checkout
-       uses: actions/checkout@v1
+       uses: actions/checkout@v2.3.5
      - name: Install Python
-       uses: actions/setup-python@v1
+       uses: actions/setup-python@v2.2.2
        with:
          python-version: '3.10'
      - name: Install dependencies
@@ -86,9 +86,9 @@ jobs:
     runs-on: macOS-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2.3.5
       - name: Install Python
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v2.2.2
         with:
           python-version: '3.10'
       - name: Install requirements
@@ -113,9 +113,9 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
      - name: Checkout
-       uses: actions/checkout@v1
+       uses: actions/checkout@v2.3.5
      - name: Install Python
-       uses: actions/setup-python@v1
+       uses: actions/setup-python@v2.2.2
        with:
          python-version: '3.10'
      - name: Install dependencies
