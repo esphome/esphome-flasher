@@ -1,0 +1,24 @@
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
+[tool.black]
+target-version = ['py37']
+
+[tool.pylint.MASTER]
+reports = 'no'
+disable = [
+  "too-many-branches",
+  "missing-function-docstring",
+  "missing-module-docstring",
+  "too-many-statements",
+  "import-outside-toplevel",
+  "line-too-long",
+  "missing-class-docstring",
+  "too-few-public-methods",
+  "too-many-arguments",
+  "too-many-instance-attributes",
+  "too-many-locals",
+  "unused-argument",
+  "cyclic-import",
+]
