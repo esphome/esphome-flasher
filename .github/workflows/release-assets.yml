@@ -12,7 +12,7 @@ jobs:
       - name: Install Python
         uses: actions/setup-python@v2.2.2
         with:
-          python-version: '3.10'
+          python-version: '3.9'
           architecture: 'x64'
       - name: Install requirements
         run: |
@@ -37,7 +37,7 @@ jobs:
       - name: Install Python
         uses: actions/setup-python@v2.2.2
         with:
-          python-version: '3.10'
+          python-version: '3.9'
           architecture: 'x86'
       - name: Install requirements
         run: |
@@ -64,7 +64,7 @@ jobs:
       - name: Install Python
         uses: actions/setup-python@v2.2.2
         with:
-          python-version: '3.10'
+          python-version: '3.9'
       - name: Install dependencies
         run: |
           sudo apt install libgtk-3-dev libnotify-dev libsdl2-dev
@@ -97,7 +97,7 @@ jobs:
       - name: Install Python
         uses: actions/setup-python@v2.2.2
         with:
-          python-version: '3.10'
+          python-version: '3.9'
       - name: Install requirements
         run: |
           pip install -r requirements.txt -r requirements_build.txt
