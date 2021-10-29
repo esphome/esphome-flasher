@@ -100,16 +100,14 @@ jobs:
           python -m PyInstaller.__main__ -F -w -n ESPHome-Flasher -i icon.icns esphomeflasher/__main__.py
       - name: See dist directory
         run: ls dist
-      - name: Move app
+      - name: Tar files
         run: |
-          mv dist/ESPHome-Flasher.app dist/ESPHome-Flasher-dev-macOS.app
-      - name: 'Tar files'
-        run: tar -cvf dist.tar dist/*
+          tar -C dist -cvf dist.tar ESPHome-Flasher.app
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v2
         with:
           name: macOS
-          path: dist.tar    
+          path: dist.tar
 
   build-pypi:
     runs-on: ubuntu-18.04

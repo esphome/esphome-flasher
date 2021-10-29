@@ -1,0 +1,119 @@
+name: Release Assets Workflow
+
+on:
+  release:
+
+jobs:
+  build-windows:
+    runs-on: windows-2019
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Install Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: '3.7'
+          architecture: 'x64'
+      - name: Install requirements
+        run: |
+          pip install -r requirements.txt -r requirements_build.txt
+          pip install -e .
+      - name: Run PyInstaller
+        run: |
+          python -m PyInstaller.__main__ -F -w -n ESPHome-Flasher -i icon.ico esphomeflasher\__main__.py
+      - uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: dist/ESPHome-Flasher.exe
+          asset_name: ESPHome-Flasher-$tag-Windows-x64.exe
+          tag: ${{ github.ref }}
+          overwrite: true
+
+  build-windows-x86:
+    runs-on: windows-2019
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Install Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: '3.7'
+          architecture: 'x86'
+      - name: Install requirements
+        run: |
+          pip install -r requirements.txt -r requirements_build.txt
+          pip install -e .
+      - name: Run PyInstaller
+        run: |
+          python -m PyInstaller.__main__ -F -w -n ESPHome-Flasher -i icon.ico esphomeflasher\__main__.py
+      - name: See dist directory
+        run: ls dist
+      - uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: dist/ESPHome-Flasher.exe
+          asset_name: ESPHome-Flasher-$tag-Windows-x86.exe
+          tag: ${{ github.ref }}
+          overwrite: true
+
+  build-ubuntu:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Install Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: '3.7'
+      - name: Install dependencies
+        run: |
+          sudo apt install libgtk-3-dev libnotify-dev libsdl2-dev
+          pip install -U \
+           -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-18.04 \
+           wxPython
+      - name: Install requirements
+        run: |
+          pip install -r requirements.txt -r requirements_build.txt
+          pip install -e .
+      - name: Run PyInstaller
+        run: |
+          python -m PyInstaller.__main__ -F -w -n ESPHome-Flasher -i icon.ico esphomeflasher/__main__.py
+      - name: See dist directory
+        run: ls dist
+      - uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: dist/ESPHome-Flasher
+          asset_name: ESPHome-Flasher-$tag-Ubuntu-x64.exec
+          tag: ${{ github.ref }}
+          overwrite: true
+
+
+  build-macos:
+    runs-on: macOS-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Install Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: '3.7'
+      - name: Install requirements
+        run: |
+          pip install -r requirements.txt -r requirements_build.txt
+          pip install -e .
+      - name: Run PyInstaller
+        run: |
+          python -m PyInstaller.__main__ -F -w -n ESPHome-Flasher -i icon.icns esphomeflasher/__main__.py
+      - name: See dist directory
+        run: ls dist
+      - name: Tar files
+        run: |
+          tar -C dist -cvf dist.tar ESPHome-Flasher.app
+      - uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: dist.tar
+          asset_name: ESPHome-Flasher-$tag-macOS.tar
+          tag: ${{ github.ref }}
+          overwrite: true
