@@ -10,7 +10,7 @@ PROJECT_NAME = 'esphomeflasher'
 PROJECT_PACKAGE_NAME = 'esphomeflasher'
 PROJECT_LICENSE = 'MIT'
 PROJECT_AUTHOR = 'ESPHome'
-PROJECT_COPYRIGHT = '2020, ESPHome'
+PROJECT_COPYRIGHT = '2021, ESPHome'
 PROJECT_URL = 'https://esphome.io/guides/faq.html'
 PROJECT_EMAIL = 'contact@esphome.io'
 
@@ -45,7 +45,7 @@ setup(
     zip_safe=False,
     platforms='any',
     test_suite='tests',
-    python_requires='>=3.5,<4.0',
+    python_requires='>=3.7,<4.0',
     install_requires=REQUIRES,
     long_description=LONG_DESCRIPTION,
     long_description_content_type='text/markdown',
