@@ -23,6 +23,7 @@ class MockEsptoolArgs(object):
         self.verify = False
         self.erase_all = False
         self.encrypt = False
+        self.encrypt_files = None
 
 
 class ChipInfo(object):
@@ -193,7 +194,11 @@ def detect_chip(port, force_esp8266=False, force_esp32=False):
         try:
             chip = esptool.ESPLoader.detect_chip(port)
         except esptool.FatalError as err:
-            raise EsphomeflasherError("ESP Chip Auto-Detection failed: {}".format(err))
+            if "Wrong boot mode detected" in str(err):
+                msg = "ESP is not in flash boot mode. If your board has a flashing pin, try again while keeping it pressed."
+            else:
+                msg = "ESP Chip Auto-Detection failed: {}".format(err)
+            raise EsphomeflasherError(msg) from err
 
     try:
         chip.connect()

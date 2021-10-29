@@ -1,4 +1,5 @@
 # This GUI is a fork of the brilliant https://github.com/marcelstoer/nodemcu-pyflasher
+from io import TextIOBase
 import re
 import sys
 import threading
@@ -28,7 +29,7 @@ BACK_COLORS = {**COLORS, None: wx.BLACK}
 
 
 # See discussion at http://stackoverflow.com/q/41101897/131929
-class RedirectText:
+class RedirectText(TextIOBase):
     def __init__(self, text_ctrl):
         self._out = text_ctrl
         self._i = 0
@@ -140,8 +141,11 @@ class RedirectText:
                 self._line = ''
                 continue
 
-    def flush(self):
-        pass
+    def writable(self):
+        return True
+
+    def isatty(self) -> bool:
+        return True
 
 
 class FlashingThread(threading.Thread):
