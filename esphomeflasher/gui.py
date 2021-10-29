@@ -1,17 +1,16 @@
 # This GUI is a fork of the brilliant https://github.com/marcelstoer/nodemcu-pyflasher
-from io import TextIOBase
 import re
 import sys
 import threading
+from io import TextIOBase
 
 import wx
 import wx.adv
-from wx.lib.embeddedimage import PyEmbeddedImage
 import wx.lib.inspection
 import wx.lib.mixins.inspection
+from wx.lib.embeddedimage import PyEmbeddedImage
 
 from esphomeflasher.helpers import list_serial_ports
-
 
 COLOR_RE = re.compile(r"(?:\033)(?:\[(.*?)[@-~]|\].*?(?:\007|\033\\))")
 COLORS = {
