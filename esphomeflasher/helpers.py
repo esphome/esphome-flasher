@@ -5,6 +5,7 @@ import sys
 
 import serial
 
+# pylint: disable=unspecified-encoding,consider-using-with
 DEVNULL = open(os.devnull, "w")
 
 
@@ -32,7 +33,6 @@ def prevent_print(func, *args, **kwargs):
     except serial.SerialException as err:
         from esphomeflasher.common import EsphomeflasherError
 
-        raise EsphomeflasherError(f"Serial port closed: {err}")
+        raise EsphomeflasherError(f"Serial port closed: {err}") from err
     finally:
         sys.stdout = orig_sys_stdout
-        pass

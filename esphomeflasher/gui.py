@@ -12,6 +12,8 @@ from wx.lib.embeddedimage import PyEmbeddedImage
 
 from esphomeflasher.helpers import list_serial_ports
 
+# pylint: disable=no-member
+
 COLOR_RE = re.compile(r"(?:\033)(?:\[(.*?)[@-~]|\].*?(?:\007|\033\\))")
 COLORS = {
     "black": wx.BLACK,
@@ -30,6 +32,7 @@ BACK_COLORS = {**COLORS, None: wx.BLACK}
 # See discussion at http://stackoverflow.com/q/41101897/131929
 class RedirectText(TextIOBase):
     def __init__(self, text_ctrl):
+        super().__init__()
         self._out = text_ctrl
         self._i = 0
         self._line = ""
@@ -125,6 +128,7 @@ class RedirectText(TextIOBase):
         self._add_content(self._line[pos:])
 
     def write(self, string):
+        # pylint: disable=invalid-name
         for s in string:
             if s == "\r":
                 current_value = self._out.GetValue()
@@ -164,8 +168,8 @@ class FlashingThread(threading.Thread):
             if self._show_logs:
                 argv.append("--show-logs")
             run_esphomeflasher(argv)
-        except Exception as e:
-            print(f"Unexpected error: {e}")
+        except Exception as err:
+            print(f"Unexpected error: {err}")
             raise
 
 
@@ -290,7 +294,7 @@ class MainFrame(wx.Frame):
 
     def _get_serial_ports(self):
         ports = []
-        for port, desc in list_serial_ports():
+        for port, _ in list_serial_ports():
             ports.append(port)
         if not self._port and ports:
             self._port = ports[0]
@@ -307,6 +311,7 @@ class MainFrame(wx.Frame):
 
 
 class App(wx.App, wx.lib.mixins.inspection.InspectionMixin):
+    # pylint: disable=invalid-name
     def OnInit(self):
         wx.SystemOptions.SetOption("mac.window-plain-transition", 1)
         self.SetAppName("esphome-flasher (Based on NodeMCU PyFlasher)")

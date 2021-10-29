@@ -90,8 +90,8 @@ def show_logs(serial_port):
                 return
             text = raw.decode(errors="ignore")
             line = text.replace("\r", "").replace("\n", "")
-            time = datetime.now().time().strftime("[%H:%M:%S]")
-            message = time + line
+            time_ = datetime.now().time().strftime("[%H:%M:%S]")
+            message = time_ + line
             try:
                 print(message)
             except UnicodeEncodeError:
@@ -108,9 +108,10 @@ def run_esphomeflasher(argv):
         return
 
     try:
+        # pylint: disable=consider-using-with
         firmware = open(args.binary, "rb")
     except IOError as err:
-        raise EsphomeflasherError(f"Error opening binary: {err}")
+        raise EsphomeflasherError(f"Error opening binary: {err}") from err
     chip = detect_chip(port, args.esp8266, args.esp32)
     info = read_chip_info(chip)
 
@@ -122,9 +123,7 @@ def run_esphomeflasher(argv):
         print(f" - Number of Cores: {info.num_cores}")
         print(f" - Max CPU Frequency: {info.cpu_frequency}")
         print(f" - Has Bluetooth: {'YES' if info.has_bluetooth else 'NO'}")
-        print(
-            f" - Has Embedded Flash: {'YES' if info.has_embedded_flash else 'NO'}"
-        )
+        print(f" - Has Embedded Flash: {'YES' if info.has_embedded_flash else 'NO'}")
         print(
             f" - Has Factory-Calibrated ADC: {'YES' if info.has_factory_calibrated_adc else 'NO'}"
         )
@@ -142,7 +141,7 @@ def run_esphomeflasher(argv):
         except esptool.FatalError as err:
             raise EsphomeflasherError(
                 f"Error changing ESP upload baud rate: {err}"
-            )
+            ) from err
 
         # Check if the higher baud rate works
         try:
@@ -152,6 +151,7 @@ def run_esphomeflasher(argv):
             print(
                 f"Chip does not support baud rate {args.upload_baud_rate}, changing to 115200"
             )
+            # pylint: disable=protected-access
             stub_chip._port.close()
             chip = detect_chip(port, args.esp8266, args.esp32)
             stub_chip = chip_run_stub(chip)
@@ -171,18 +171,18 @@ def run_esphomeflasher(argv):
     try:
         stub_chip.flash_set_parameters(esptool.flash_size_bytes(flash_size))
     except esptool.FatalError as err:
-        raise EsphomeflasherError(f"Error setting flash parameters: {err}")
+        raise EsphomeflasherError(f"Error setting flash parameters: {err}") from err
 
     if not args.no_erase:
         try:
             esptool.erase_flash(stub_chip, mock_args)
         except esptool.FatalError as err:
-            raise EsphomeflasherError(f"Error while erasing flash: {err}")
+            raise EsphomeflasherError(f"Error while erasing flash: {err}") from err
 
     try:
         esptool.write_flash(stub_chip, mock_args)
     except esptool.FatalError as err:
-        raise EsphomeflasherError(f"Error while writing flash: {err}")
+        raise EsphomeflasherError(f"Error while writing flash: {err}") from err
 
     print("Hard Resetting...")
     stub_chip.hard_reset()
@@ -191,10 +191,13 @@ def run_esphomeflasher(argv):
     print()
 
     if args.upload_baud_rate != 115200:
+        # pylint: disable=protected-access
         stub_chip._port.baudrate = 115200
         time.sleep(0.05)  # get rid of crap sent during baud rate change
+        # pylint: disable=protected-access
         stub_chip._port.flushInput()
 
+    # pylint: disable=protected-access
     show_logs(stub_chip._port)
 
 

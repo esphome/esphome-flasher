@@ -11,7 +11,7 @@ class EsphomeflasherError(Exception):
     pass
 
 
-class MockEsptoolArgs(object):
+class MockEsptoolArgs:
     def __init__(self, flash_size, addr_filename, flash_mode, flash_freq):
         self.compress = True
         self.no_compress = False
@@ -26,7 +26,7 @@ class MockEsptoolArgs(object):
         self.encrypt_files = None
 
 
-class ChipInfo(object):
+class ChipInfo:
     def __init__(self, family, model, mac):
         self.family = family
         self.model = model
@@ -53,7 +53,7 @@ class ESP32ChipInfo(ChipInfo):
         has_embedded_flash,
         has_factory_calibrated_adc,
     ):
-        super(ESP32ChipInfo, self).__init__("ESP32", model, mac)
+        super().__init__("ESP32", model, mac)
         self.num_cores = num_cores
         self.cpu_frequency = cpu_frequency
         self.has_bluetooth = has_bluetooth
@@ -76,7 +76,7 @@ class ESP32ChipInfo(ChipInfo):
 
 class ESP8266ChipInfo(ChipInfo):
     def __init__(self, model, mac, chip_id):
-        super(ESP8266ChipInfo, self).__init__("ESP8266", model, mac)
+        super().__init__("ESP8266", model, mac)
         self.chip_id = chip_id
 
     def as_dict(self):
@@ -93,7 +93,7 @@ def read_chip_property(func, *args, **kwargs):
     try:
         return prevent_print(func, *args, **kwargs)
     except esptool.FatalError as err:
-        raise EsphomeflasherError(f"Reading chip details failed: {err}")
+        raise EsphomeflasherError(f"Reading chip details failed: {err}") from err
 
 
 def read_chip_info(chip):
@@ -115,7 +115,7 @@ def read_chip_info(chip):
             has_embedded_flash,
             has_factory_calibrated_adc,
         )
-    elif isinstance(chip, esptool.ESP8266ROM):
+    if isinstance(chip, esptool.ESP8266ROM):
         model = read_chip_property(chip.get_chip_description)
         chip_id = read_chip_property(chip.chip_id)
         return ESP8266ChipInfo(model, mac, chip_id)
@@ -128,7 +128,7 @@ def chip_run_stub(chip):
     except esptool.FatalError as err:
         raise EsphomeflasherError(
             f"Error putting ESP in stub flash mode: {err}"
-        )
+        ) from err
 
 
 def detect_flash_size(stub_chip):
@@ -165,11 +165,11 @@ def open_downloadable_binary(path):
         except requests.exceptions.Timeout as err:
             raise EsphomeflasherError(
                 f"Timeout while retrieving firmware file '{path}': {err}"
-            )
+            ) from err
         except requests.exceptions.RequestException as err:
             raise EsphomeflasherError(
                 f"Error while retrieving firmware file '{path}': {err}"
-            )
+            ) from err
 
         binary = io.BytesIO()
         binary.write(response.content)
@@ -179,7 +179,7 @@ def open_downloadable_binary(path):
     try:
         return open(path, "rb")
     except IOError as err:
-        raise EsphomeflasherError(f"Error opening binary '{path}': {err}")
+        raise EsphomeflasherError(f"Error opening binary '{path}': {err}") from err
 
 
 def format_bootloader_path(path, flash_mode, flash_freq):
@@ -229,6 +229,6 @@ def detect_chip(port, force_esp8266=False, force_esp32=False):
     try:
         chip.connect()
     except esptool.FatalError as err:
-        raise EsphomeflasherError(f"Error connecting to ESP: {err}")
+        raise EsphomeflasherError(f"Error connecting to ESP: {err}") from err
 
     return chip
