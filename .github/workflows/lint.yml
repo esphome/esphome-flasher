@@ -1,0 +1,70 @@
+name: Lint workflow
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - id: flake8
+            name: Lint with flake8
+          - id: pylint
+            name: Lint with pylint
+          - id: black
+            name: Check formatting with black
+          - id: isort
+            name: Check import order with isort
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        id: python
+        with:
+          python-version: '3.7'
+      - name: Install dependencies
+        run: |
+          sudo apt install libgtk-3-dev libnotify-dev libsdl2-dev
+          pip install -U \
+            -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-18.04 \
+            wxPython
+
+      - name: Get pip cache dir
+        id: pip-cache
+        run: |
+          echo "::set-output name=dir::$(pip cache dir)"
+      - name: Restore PIP cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.pip-cache.outputs.dir }}
+          key: pip-${{ steps.python.outputs.python-version }}-${{ hashFiles('requirements.txt', 'requirements_test.txt') }}
+          restore-keys: |
+            pip-${{ steps.python.outputs.python-version }}-
+      - name: Set up Python environment
+        run: |
+          pip3 install -r requirements.txt -r requirements_test.txt
+          pip3 install -e .
+
+      - name: Register problem matchers
+        run: |
+          echo "::add-matcher::.github/workflows/matchers/flake8.json"
+          echo "::add-matcher::.github/workflows/matchers/pylint.json"
+          echo "::add-matcher::.github/workflows/matchers/isort.json"
+
+      - run: flake8 esphomeflasher
+        if: ${{ matrix.id == 'flake8' }}
+      - run: pylint esphomeflasher
+        if: ${{ matrix.id == 'pylint' }}
+      - run: black --check --diff --color esphomeflasher
+        if: ${{ matrix.id == 'black' }}
+      - run: isort --check --diff esphomeflasher
+        if: ${{ matrix.id == 'isort' }}
