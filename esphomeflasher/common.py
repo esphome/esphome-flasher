@@ -212,13 +212,13 @@ def configure_write_flash_args(
     return MockEsptoolArgs(flash_size, addr_filename, flash_mode, flash_freq)
 
 
-def detect_chip(port, force_esp8266=False, force_esp32=False):
+def detect_chip(port, force_esp8266=False, force_esp32=False, connect_mode='default_reset'):
     if force_esp8266 or force_esp32:
         klass = esptool.ESP32ROM if force_esp32 else esptool.ESP8266ROM
         chip = klass(port)
     else:
         try:
-            chip = esptool.ESPLoader.detect_chip(port)
+            chip = esptool.ESPLoader.detect_chip(port, connect_mode=connect_mode)
         except esptool.FatalError as err:
             if "Wrong boot mode detected" in str(err):
                 msg = "ESP is not in flash boot mode. If your board has a flashing pin, try again while keeping it pressed."
@@ -227,7 +227,7 @@ def detect_chip(port, force_esp8266=False, force_esp32=False):
             raise EsphomeflasherError(msg) from err
 
     try:
-        chip.connect()
+        chip.connect(mode=connect_mode)
     except esptool.FatalError as err:
         raise EsphomeflasherError(f"Error connecting to ESP: {err}") from err
 

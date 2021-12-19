@@ -54,6 +54,11 @@ def parse_args(argv):
         default=ESP32_DEFAULT_OTA_DATA,
     )
     parser.add_argument(
+        '--connect_mode',
+        help="Connect Mode (similar to esptool 'before' argument)",
+        default="default_reset"
+    )
+    parser.add_argument(
         "--no-erase", help="Do not erase flash before flashing", action="store_true"
     )
     parser.add_argument("--show-logs", help="Only show logs", action="store_true")
