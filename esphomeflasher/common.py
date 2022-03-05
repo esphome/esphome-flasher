@@ -200,11 +200,18 @@ def configure_write_flash_args(
     firmware = open_downloadable_binary(firmware_path)
     flash_mode, flash_freq = read_firmware_info(firmware)
     if isinstance(info, ESP32ChipInfo):
-        model = "esp32"
-        ofs_bootloader = 0x1000
         ofs_partitions = 0x8000
-        ofs_otadata = 0xe000
-        ofs_firmware = 0x10000
+
+        if "ESP32-C3" in info.model:
+            model = "esp32c3"
+            ofs_bootloader = 0x0
+            ofs_otadata = 0x16000
+            ofs_firmware = 0x20000
+        else:
+            model = "esp32"
+            ofs_bootloader = 0x1000
+            ofs_otadata = 0xe000
+            ofs_firmware = 0x10000
 
         if flash_freq in ("26m", "20m"):
             raise EsphomeflasherError(
