@@ -3,7 +3,10 @@ import struct
 
 import esptool
 
-from esphomeflasher.const import HTTP_REGEX
+from esphomeflasher.const import (
+    ESP32_DEFAULT_PARTITIONS,
+    HTTP_REGEX,
+)
 from esphomeflasher.helpers import prevent_print
 
 
@@ -186,6 +189,10 @@ def format_bootloader_path(path, model, flash_mode, flash_freq):
     return path.replace("$MODEL$", model).replace("$FLASH_MODE$", flash_mode).replace("$FLASH_FREQ$", flash_freq)
 
 
+def format_partitions_path(path, model):
+    return path.replace("$MODEL$", model)
+
+
 def configure_write_flash_args(
     info, firmware_path, flash_size, bootloader_path, partitions_path, otadata_path
 ):
@@ -206,6 +213,10 @@ def configure_write_flash_args(
         bootloader = open_downloadable_binary(
             format_bootloader_path(bootloader_path, model, flash_mode, flash_freq)
         )
+
+        if not partitions_path:
+            partitions_path = format_partitions_path(ESP32_DEFAULT_PARTITIONS, model)
+
         partitions = open_downloadable_binary(partitions_path)
         otadata = open_downloadable_binary(otadata_path)
 
