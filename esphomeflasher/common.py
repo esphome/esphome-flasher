@@ -182,8 +182,8 @@ def open_downloadable_binary(path):
         raise EsphomeflasherError(f"Error opening binary '{path}': {err}") from err
 
 
-def format_bootloader_path(path, flash_mode, flash_freq):
-    return path.replace("$FLASH_MODE$", flash_mode).replace("$FLASH_FREQ$", flash_freq)
+def format_bootloader_path(path, model, flash_mode, flash_freq):
+    return path.replace("$MODEL$", model).replace("$FLASH_MODE$", flash_mode).replace("$FLASH_FREQ$", flash_freq)
 
 
 def configure_write_flash_args(
@@ -193,6 +193,7 @@ def configure_write_flash_args(
     firmware = open_downloadable_binary(firmware_path)
     flash_mode, flash_freq = read_firmware_info(firmware)
     if isinstance(info, ESP32ChipInfo):
+        model = "esp32"
         ofs_bootloader = 0x1000
         ofs_partitions = 0x8000
         ofs_otadata = 0xe000
@@ -203,7 +204,7 @@ def configure_write_flash_args(
                 f"No bootloader available for flash frequency {flash_freq}"
             )
         bootloader = open_downloadable_binary(
-            format_bootloader_path(bootloader_path, flash_mode, flash_freq)
+            format_bootloader_path(bootloader_path, model, flash_mode, flash_freq)
         )
         partitions = open_downloadable_binary(partitions_path)
         otadata = open_downloadable_binary(otadata_path)
