@@ -21,7 +21,6 @@ from esphomeflasher.common import (
 from esphomeflasher.const import (
     ESP32_DEFAULT_BOOTLOADER_FORMAT,
     ESP32_DEFAULT_OTA_DATA,
-    ESP32_DEFAULT_PARTITIONS,
 )
 from esphomeflasher.helpers import list_serial_ports
 
@@ -46,7 +45,6 @@ def parse_args(argv):
     parser.add_argument(
         "--partitions",
         help="(ESP32-only) The partitions to flash.",
-        default=ESP32_DEFAULT_PARTITIONS,
     )
     parser.add_argument(
         "--otadata",
