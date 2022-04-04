@@ -11,7 +11,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install Python
-        uses: actions/setup-python@v2.3.1
+        uses: actions/setup-python@v3.1.0
         with:
           python-version: '3.9'
           architecture: 'x64'
@@ -36,7 +36,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install Python
-        uses: actions/setup-python@v2.3.1
+        uses: actions/setup-python@v3.1.0
         with:
           python-version: '3.9'
           architecture: 'x86'
@@ -63,7 +63,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install Python
-        uses: actions/setup-python@v2.3.1
+        uses: actions/setup-python@v3.1.0
         with:
           python-version: '3.9'
       - name: Install dependencies
@@ -97,7 +97,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install Python
-        uses: actions/setup-python@v2.3.1
+        uses: actions/setup-python@v3.1.0
         with:
           python-version: '3.9'
       - name: Install requirements
