@@ -41,7 +41,7 @@ jobs:
         run: |
           echo "::set-output name=dir::$(pip cache dir)"
       - name: Restore PIP cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3.0.1
         with:
           path: ${{ steps.pip-cache.outputs.dir }}
           key: pip-${{ steps.python.outputs.python-version }}-${{ hashFiles('requirements.txt', 'requirements_test.txt') }}
