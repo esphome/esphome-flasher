@@ -23,7 +23,7 @@ jobs:
       - name: Run PyInstaller
         run: |
           python -m PyInstaller.__main__ -F -w -n ESPHome-Flasher -i icon.ico esphomeflasher\__main__.py
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: Windows
           path: dist/ESPHome-Flasher.exe
@@ -47,7 +47,7 @@ jobs:
           python -m PyInstaller.__main__ -F -w -n ESPHome-Flasher -i icon.ico esphomeflasher\__main__.py
       - name: See dist directory
         run: ls dist
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: Windows-x86
           path: dist/ESPHome-Flasher.exe
@@ -77,7 +77,7 @@ jobs:
          python -m PyInstaller.__main__ -F -w -n ESPHome-Flasher -i icon.ico esphomeflasher/__main__.py
      - name: See dist directory
        run: ls dist
-     - uses: actions/upload-artifact@v2
+     - uses: actions/upload-artifact@v3
        with:
          name: Ubuntu
          path: dist/ESPHome-Flasher
@@ -105,7 +105,7 @@ jobs:
         run: |
           tar -C dist -cvf dist.tar ESPHome-Flasher.app
       - name: 'Upload Artifact'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: macOS
           path: dist.tar
@@ -134,11 +134,11 @@ jobs:
        run: python setup.py sdist bdist_wheel
      - name: See dist directory
        run: ls dist
-     - uses: actions/upload-artifact@v2
+     - uses: actions/upload-artifact@v3
        with:
          name: sdist
          path: dist/esphomeflasher-*.tar.gz
-     - uses: actions/upload-artifact@v2
+     - uses: actions/upload-artifact@v3
        with:
          name: bdist_wheel
          path: dist/esphomeflasher-*.whl
