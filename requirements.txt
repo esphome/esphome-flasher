@@ -1,3 +1,3 @@
 wxpython>=4.1.1,<5.0
-esptool==3.2
+esptool==4.6.2
 requests>=2.26.0,<3
